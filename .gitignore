@@ -1,0 +1,65 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules/
+
+# Build artifacts
+dist/
+dist-ssr/
+coverage/
+*.local
+
+# Environment variables
+.env
+.env.*.local
+.env.local
+
+# IDE and OS specific files
+.DS_Store
+.vscode/*
+!.vscode/extensions.json # Keep extensions.json for team consistency
+.idea/ # IntelliJ IDEA
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Vue-specific ignores
+.vite/ # Vite cache directory
+.nuxt/ # Nuxt.js build output (if applicable)
+
+# Test-related ignores
+/cypress/videos/
+/cypress/screenshots/
+*.vitest.json # Vitest configuration files if they are generated
+
+# Other common ignores
+*.bak # Backup files
+*.orig # Merge conflict originals
+*.patch # Patch files
+*.diff # Diff files
+*.iml # IntelliJ IDEA module files
+.eslintcache # ESLint cache file
+.prettierignore # Prettier ignore file (if not in repo)
+.npm/ # npm cache
+.yarn/ # yarn cache
+.pnpm-store/ # pnpm store
+
+# Docker
+.dockerignore
+Dockerfile.local # Example for local Dockerfile
+.docker/
+
+# Cloudflare Pages
+.wrangler/

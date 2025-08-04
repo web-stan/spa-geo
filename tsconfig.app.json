@@ -1,0 +1,31 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "exclude": ["src/**/__tests__/*", "node_modules"], // Explicitly exclude node_modules for cleaner type checking
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    // Modern type checking options:
+    "strict": true, // Enable all strict type-checking options (recommended for new projects)
+    "forceConsistentCasingInFileNames": true, // Ensure consistent casing in file names to prevent issues on case-sensitive file systems
+    "noFallthroughCasesInSwitch": true, // Report errors for fallthrough cases in switch statements
+    "noImplicitReturns": true, // Report errors on functions that don't return a value on all code paths
+    "noUncheckedIndexedAccess": true, // Add `undefined` to the type of indexed access
+    "noImplicitOverride": true, // Ensure 'override' keyword is used for overriding class members
+    "noPropertyAccessFromIndexSignature": false, // Disallow accessing properties with a string literal when an index signature is present
+    "esModuleInterop": true, // Enables `allowSyntheticDefaultImports` for type compatibility with CommonJS modules
+    "isolatedModules": true, // Ensure each file can be safely transpiled without relying on other files
+    "skipLibCheck": true, // Skip type checking of declaration files (e.g., from node_modules) for faster builds
+    "lib": ["ESNext", "DOM", "DOM.Iterable"], // Specify library files to be included in the compilation
+    "moduleResolution": "bundler", // Modern module resolution strategy for bundlers like Vite
+    "allowImportingTsExtensions": true, // Allow importing .ts and .tsx files with extensions
+    "resolveJsonModule": true, // Allows importing .json files
+    "module": "ESNext", // Specify module code generation
+    "target": "ESNext", // Specify ECMAScript target version
+    "jsx": "preserve", // Preserve JSX for Vue's JSX/TSX support
+    "types": ["node"] // Include types for Node.js and Vitest if you're using it
+  }
+}
