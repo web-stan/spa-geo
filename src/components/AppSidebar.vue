@@ -31,6 +31,7 @@ import PlaceCard from './PlaceCard.vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { nextTick, ref, watch } from 'vue';
 import { computed } from 'vue';
+import type { Place } from '@/types';
 
 const { toggleSidebar, isMobile } = useSidebar();
 const { places, isMarkerSelected, selectedPlaceInfoCard } = storeToRefs(usePlacesStore());
@@ -39,6 +40,13 @@ const { clearSelection } = usePlacesStore();
 const { markerFocus } = useMarkerFocus();
 const { fitMapToAllMarkers } = useMapControl();
 
+const selectPlaceFromList = (place: Place) => {
+  markerFocus(place);
+
+  if (isMobile.value) {
+    toggleSidebar();
+  }
+};
 const resetActiveMarker = () => {
   clearSelection();
   fitMapToAllMarkers();
@@ -113,7 +121,7 @@ watch(isOpen, async (value) => {
                     v-for="place in places"
                     :key="place.id"
                     :value="place"
-                    @click="markerFocus(place)">
+                    @select="selectPlaceFromList(place)">
                     {{ place.placeName }}
 
                     <ComboboxItemIndicator>

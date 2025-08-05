@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import type { PlacesStore, Place, PlaceCard, PolygonApi, GeoJson } from '@/types';
 import type { LatLngExpression } from 'leaflet';
 import { useMapControl } from '@/composables';
-import { useRouter } from 'vue-router';
+import router from '@/router';
 
 export const usePlacesStore = defineStore('places', {
   state: (): PlacesStore => ({
@@ -26,37 +26,48 @@ export const usePlacesStore = defineStore('places', {
           setTimeout(resolve, 1500, polygons),
         );
 
-        this.isLoading = false;
+        // this.isLoading = false;
         await this.loadPlacesFromPolygons(data);
       } catch (error) {
         console.error(error);
-        const router = useRouter();
-        router.push({ name: 'NotFound' });
         //redirect...
       } finally {
         this.isLoading = false;
+
+        if (!this.places.length) {
+          router.push({ name: 'NotFound' });
+        }
       }
     },
-    async loadPlacesFromPolygons(polygons: PolygonApi[]) {
+    async loadPlacesFromPolygons(polygons: PolygonApi[], batchSize: number = 10) {
+      const allCenters = [];
+
       for (const poly of polygons) {
         //getting polygon center @turf/center
-        let center = null;
         try {
           const { getPolygonCenter } = await import('@/utils/polygonCenter');
-          center = getPolygonCenter(poly.polygon);
+          allCenters.push(getPolygonCenter(poly.polygon));
         } catch {
           continue;
         }
+      }
 
-        //getting info about place API Nominatim
-        let place = null;
-        try {
-          const { fetchPlaceFromNominatim } = await import('@/services/nominatimService');
-          place = await fetchPlaceFromNominatim<Place>(center.lat!, center.lon!, poly);
-          this.places.push(place);
-        } catch (error) {
-          console.error(error);
-          continue;
+      //getting info about place API Nominatim
+      const { fetchPlaceFromNominatim } = await import('@/services/nominatimService');
+
+      for (let i = 0; i < allCenters.length; i += batchSize) {
+        const batch = allCenters.slice(i, i + batchSize);
+
+        const batchResults = await Promise.all(
+          batch.map((center, centerIdex) =>
+            fetchPlaceFromNominatim<Place>(center.lat!, center.lon!, polygons[centerIdex]!),
+          ),
+        );
+
+        this.places.push(...JSON.parse(JSON.stringify(batchResults)));
+
+        if (this.places.length === batchSize) {
+          this.isLoading = false;
         }
       }
 
@@ -64,12 +75,6 @@ export const usePlacesStore = defineStore('places', {
       if (!this.selectedPlace) {
         const { fitMapToAllMarkers } = useMapControl();
         fitMapToAllMarkers();
-      }
-
-      if (this.places.length === 0) {
-        const router = useRouter();
-        //redirect...
-        router.push({ name: 'NotFound' });
       }
     },
     selectPlace(place: Place) {
