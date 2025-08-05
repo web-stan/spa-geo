@@ -3,10 +3,8 @@ import { usePlacesStore, useLeafletMapStore } from '@/stores';
 import type { GeoJson, LMapComp, Place } from '@/types';
 import { geoJSON } from 'leaflet';
 import { storeToRefs } from 'pinia';
-import { useSidebar } from '@/components/ui/sidebar';
 
 export const useMarkerFocus = () => {
-  const { isMobile, toggleSidebar, open } = useSidebar();
   const { selectedGeoJson, selectedPlace } = storeToRefs(usePlacesStore());
   const { selectPlace, loadPlaceGeoJson } = usePlacesStore();
   const leafletMapStore = useLeafletMapStore();
@@ -15,10 +13,6 @@ export const useMarkerFocus = () => {
 
   function markerFocus(place: Place) {
     if (selectedPlace.value?.id === place.id) return;
-
-    if (isMobile.value && open.value) {
-      toggleSidebar();
-    }
 
     selectPlace(place);
     loadPlaceGeoJson(place.name);
