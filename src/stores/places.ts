@@ -39,7 +39,7 @@ export const usePlacesStore = defineStore('places', {
         }
       }
     },
-    async loadPlacesFromPolygons(polygons: PolygonApi[], batchSize: number = 10) {
+    async loadPlacesFromPolygons(polygons: PolygonApi[], batchSize: number = 2) {
       const allCenters = [];
 
       for (const poly of polygons) {
